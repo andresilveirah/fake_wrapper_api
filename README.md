@@ -12,6 +12,8 @@
 }
 ```
 
+The server will send back in the response whatever was sent as query param. (E.g. `foo: bar`)
+
 ### `POST /action/:type`
 
 Data:
@@ -30,3 +32,5 @@ Response:
   "foo": "bar"
 }
 ```
+
+The server will send back in the response whatever was sent in the request's body. (E.g. `foo: bar`)
