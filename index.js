@@ -11,7 +11,7 @@ app.use(logger)
 
 app.get('/message', (req, res) => {
   res.status(200).json({
-    url: 'https://notice.sp-prod.net/?message_id=66281',
+    url: 'https://notice.sp-prod.net/?message_id=70171',
     uuid: 'cfa454f8-635b-43e5-b6ba-1fbff7e56fa9',
     ...req.query
   })
