@@ -14,6 +14,11 @@ app.get('/message', (req, res) => {
     url: null,
     uuid: 'cfa454f8-635b-43e5-b6ba-1fbff7e56fa9',
     meta: "{'foo': 'bar'}",
+    consents: {
+      status: "rejectedSome",
+      rejectedVendors: ["ABCD"],
+      rejectedPurposes: []
+    },
     ...req.query
   })
 })
