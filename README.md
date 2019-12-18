@@ -6,9 +6,9 @@
 
 ```json
 {
-  "url": "https://notice.sp-prod.net/?message_id=66281",
+  "url": null,
   "uuid": "cfa454f8-635b-43e5-b6ba-1fbff7e56fa9",
-  "foo": "bar"
+  "meta": "{'foo': 'bar'}",
 }
 ```
 
@@ -27,9 +27,13 @@ Response:
 
 ```json
 {
-  "uuid": "cfa454f8-635b-43e5-b6ba-1fbff7e56fa9",
-  "euconsent": "BOnf5gkOnf5gkAGABBENCm-AAAAqWADABUADQAUg",
-  "foo": "bar"
+  "uuid": "ABCD",
+  "consents": {
+    "status": "rejectedSome",
+    "rejectedVendors": ["ABCD"],
+    "rejectedPurposes": []
+  },
+  "meta": "{'foo': 'bar'}"
 }
 ```
 

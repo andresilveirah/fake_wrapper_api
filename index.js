@@ -11,8 +11,9 @@ app.use(logger)
 
 app.get('/message', (req, res) => {
   res.status(200).json({
-    url: 'https://notice.sp-prod.net/?message_id=70171',
+    url: null,
     uuid: 'cfa454f8-635b-43e5-b6ba-1fbff7e56fa9',
+    meta: "{'foo': 'bar'}",
     ...req.query
   })
 })
@@ -20,7 +21,12 @@ app.get('/message', (req, res) => {
 app.post('/action/:type', (req, res) => {
   res.status(200).json({
     uuid: 'cfa454f8-635b-43e5-b6ba-1fbff7e56fa9',
-    euconsent: 'BOnf5gkOnf5gkAGABBENCm-AAAAqWADABUADQAUg',
+    meta: "{'foo': 'bar'}",
+    consents: {
+      status: "rejectedSome",
+      rejectedVendors: ["ABCD"],
+      rejectedPurposes: []
+    },
     ...req.body
   })
 })
