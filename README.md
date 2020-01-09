@@ -2,7 +2,7 @@
 
 ## Routes
 
-### `GET gdpr/message-url?foo=bar`
+### `GET /gdpr/message-url?foo=bar`
 
 ```json
 {
@@ -21,7 +21,7 @@
 
 The server will send back in the response whatever was sent as query param. (E.g. `foo: bar`)
 
-### `POST /action/:type`
+### `POST /gdpr/consent/:type`
 
 Data:
 ```json
