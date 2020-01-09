@@ -2,18 +2,20 @@
 
 ## Routes
 
-### `GET /message?foo=bar`
+### `GET gdpr/message-url?foo=bar`
 
 ```json
 {
-  "url": null,
+  "url": "https://notice.sp-prod.net/?message_id=70171",
   "uuid": "cfa454f8-635b-43e5-b6ba-1fbff7e56fa9",
   "meta": "{'foo': 'bar'}",
   "consents": {
-    "status": "rejectedSome",
-    "rejectedVendors": ["ABCD"],
-    "rejectedPurposes": []
+    "consentString": "BOn2OwMOn2OwMAGABCENCn-AAAAqyABAFIA",
+    "status": "acceptedSome",
+    "acceptedVendors": ["ABCD"],
+    "acceptedPurposes": []
   },
+  "foo": "bar"
 }
 ```
 
@@ -32,11 +34,14 @@ Response:
 
 ```json
 {
-  "uuid": "ABCD",
+  "url": "https://notice.sp-prod.net/?message_id=70171",
+  "uuid": "cfa454f8-635b-43e5-b6ba-1fbff7e56fa9",
+  "meta": "{'foo': 'bar'}",
   "consents": {
-    "status": "rejectedSome",
-    "rejectedVendors": ["ABCD"],
-    "rejectedPurposes": []
+    "consentString": "BOn2OwMOn2OwMAGABCENCn-AAAAqyABAFIA",
+    "status": "acceptedSome",
+    "acceptedVendors": ["ABCD"],
+    "acceptedPurposes": []
   },
   "meta": "{'foo': 'bar'}"
 }
