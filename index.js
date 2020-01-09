@@ -9,31 +9,33 @@ const app = express()
 app.use(json())
 app.use(logger)
 
-app.get('/message', (req, res) => {
+app.get('gdpr/message-url', (req, res) => {
   res.status(200).json({
-    url: null,
+    url: "https://notice.sp-prod.net/?message_id=70171",
     uuid: 'cfa454f8-635b-43e5-b6ba-1fbff7e56fa9',
     meta: "{'foo': 'bar'}",
     consents: {
-      status: "rejectedSome",
-      rejectedVendors: ["ABCD"],
-      rejectedPurposes: []
+      consentString: "BOn2OwMOn2OwMAGABCENCn-AAAAqyABAFIA",
+      status: "acceptedSome",
+      acceptedVendors: ["ABCD"],
+      acceptedPurposes: []
     },
     ...req.query
   })
 })
 
-app.post('/action/:type', (req, res) => {
+app.post('gdpr/consent/:type', (req, res) => {
   res.status(200).json({
     uuid: 'cfa454f8-635b-43e5-b6ba-1fbff7e56fa9',
     meta: "{'foo': 'bar'}",
     consents: {
-      status: "rejectedSome",
-      rejectedVendors: ["ABCD"],
-      rejectedPurposes: []
+      consentString: "BOn2OwMOn2OwMAGABCENCn-AAAAqyABAFIA",
+      status: "acceptedSome",
+      acceptedVendors: ["ABCD"],
+      acceptedPurposes: []
     },
     ...req.body
   })
 })
 
-app.listen(config.port, () => console.log(`AMP - listening on port ${config.port}`))
+app.listen(config.port, () => console.log(`FAKE Wrapper API - listening on port ${config.port}`))
