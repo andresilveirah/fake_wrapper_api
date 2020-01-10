@@ -14,11 +14,11 @@ app.get('/gdpr/message-url', (req, res) => {
     url: "https://notice.sp-prod.net/?message_id=70171",
     uuid: 'cfa454f8-635b-43e5-b6ba-1fbff7e56fa9',
     meta: "{'foo': 'bar'}",
-    consents: {
-      consentString: "BOn2OwMOn2OwMAGABCENCn-AAAAqyABAFIA",
-      status: "acceptedSome",
-      acceptedVendors: ["ABCD"],
-      acceptedPurposes: []
+    userConsent: {
+      status: "acceptedAll",
+      acceptedVendors: [],
+      acceptedCategories: [],
+      euconsent: "BOn2OwMOn2OwMAGABCENCn-AAAAqyABAFIA"
     },
     ...req.query
   })
@@ -28,11 +28,11 @@ app.post('/gdpr/consent/:type', (req, res) => {
   res.status(200).json({
     uuid: 'cfa454f8-635b-43e5-b6ba-1fbff7e56fa9',
     meta: "{'foo': 'bar'}",
-    consents: {
-      consentString: "BOn2OwMOn2OwMAGABCENCn-AAAAqyABAFIA",
-      status: "acceptedSome",
-      acceptedVendors: ["ABCD"],
-      acceptedPurposes: []
+    userConsent: {
+      status: "acceptedAll",
+      acceptedVendors: [],
+      acceptedCategories: [],
+      euconsent: "BOn2OwMOn2OwMAGABCENCn-AAAAqyABAFIA"
     },
     ...req.body
   })
