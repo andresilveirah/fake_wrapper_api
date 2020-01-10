@@ -15,23 +15,21 @@ app.get('/gdpr/message-url', (req, res) => {
     uuid: 'cfa454f8-635b-43e5-b6ba-1fbff7e56fa9',
     meta: "{'foo': 'bar'}",
     userConsent: {
-      status: "acceptedAll",
-      acceptedVendors: [],
-      acceptedCategories: [],
+      acceptedVendors: ["VendorIdExample"],
+      acceptedCategories: ["CategoryExample"],
       euconsent: "BOn2OwMOn2OwMAGABCENCn-AAAAqyABAFIA"
     },
     ...req.query
   })
 })
 
-app.post('/gdpr/consent/:type', (req, res) => {
+app.post('/gdpr/consent/', (req, res) => {
   res.status(200).json({
     uuid: 'cfa454f8-635b-43e5-b6ba-1fbff7e56fa9',
     meta: "{'foo': 'bar'}",
     userConsent: {
-      status: "acceptedAll",
-      acceptedVendors: [],
-      acceptedCategories: [],
+      acceptedVendors: ["VendorIdExample"],
+      acceptedCategories: ["CategoryExample"],
       euconsent: "BOn2OwMOn2OwMAGABCENCn-AAAAqyABAFIA"
     },
     ...req.body
