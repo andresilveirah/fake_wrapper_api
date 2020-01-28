@@ -12,12 +12,12 @@ app.use(json())
 app.use(logger)
 
 const title = {
-  text: "Hello World",
+  text: "Message Title",
   style: {
-    fontFamily: 'Gill Sans Extrabold, sans-serif',
-    fontSize: '24px',
-    color: '#fc7e7e',
-    backgroundColor: '#cecece'
+    fontFamily: 'Arial',
+    fontSize: '34px',
+    color: '#000000',
+    backgroundColor: '#ffffff'
   },
   customFields: {
     fooTitle: 'barTitle'
@@ -25,12 +25,20 @@ const title = {
 }
 
 const body = {
-  text: "This is the body of the message. A lot of cool text and stuff. ",
+  text: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam euismod fermentum tortor, eget commodo neque ullamcorper a. Etiam hendrerit sem velit, faucibus viverra justo viverra nec. Sed eu nulla et eros finibus egestas ut et ipsum. Nunc hendrerit metus eget ultrices pellentesque. Duis eget augue elit. Pellentesque ac ipsum dignissim, egestas urna eu, aliquam nunc. Ut vel maximus tellus. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vivamus ac ornare nulla. Vestibulum molestie orci nec sollicitudin suscipit. Nulla imperdiet euismod nisl, sit amet aliquam nibh fermentum et. Etiam molestie imperdiet tellus, nec fringilla enim condimentum eu. Nullam congue metus lacus, sit amet vehicula lacus maximus non. Aenean vel ipsum sit amet justo finibus malesuada et id ex.
+
+Maecenas sit amet urna a mauris eleifend vehicula sed et est. Sed efficitur fringilla congue. In vitae malesuada mauris. Nunc malesuada, mi quis rutrum efficitur, nibh odio maximus dui, id tempor tellus arcu at nulla. Pellentesque rhoncus urna lacus, ac vestibulum lacus ullamcorper quis. Interdum et malesuada fames ac ante ipsum primis in faucibus. Donec tincidunt ut nisl vitae iaculis. Suspendisse sit amet vulputate erat, non tristique turpis.
+
+Donec eget fermentum tortor. Mauris malesuada commodo ante, quis condimentum sem faucibus id. Ut aliquam aliquam tempus. Donec commodo ac enim nec elementum. Duis vehicula nunc a nunc tempus lobortis. Fusce ut faucibus neque. Nulla consequat feugiat hendrerit. Nunc et molestie nibh. Ut vitae dictum odio. Duis a dolor in dolor dictum pulvinar sed id lorem. Ut ac ornare velit, porta semper lacus.
+
+Nam eget ipsum eget nibh euismod vulputate. Aenean metus tellus, tristique fermentum dictum in, aliquet non ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Quisque mollis, leo ac eleifend suscipit, velit ante hendrerit tortor, eleifend laoreet erat lectus eget eros. Vestibulum rutrum, ex vel efficitur ultricies, sem justo molestie ante, nec tempor urna justo vitae erat. Quisque eleifend rutrum ullamcorper. Sed mauris erat, rutrum ut condimentum in, ullamcorper ac massa. Suspendisse aliquet est nisi. Sed facilisis tortor vitae sapien lobortis, maximus faucibus lorem mollis. Morbi ultrices, nisi sed efficitur molestie, nisi magna ornare justo, quis congue neque nulla vitae magna. Nunc volutpat commodo tempus. Nullam scelerisque mauris erat, et hendrerit nibh commodo nec. Morbi at purus lacinia, auctor dolor nec, fringilla nulla. Duis aliquam nisi eu metus rutrum vehicula. Aenean fringilla in nisi eu aliquam. Donec tempus vel sapien sed dapibus.
+
+Nullam rhoncus fermentum libero nec scelerisque. Phasellus id odio pharetra, pellentesque velit vel, vulputate libero. Duis efficitur finibus suscipit. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam accumsan lorem est, suscipit porttitor tortor semper a. Praesent suscipit quam urna, in tristique magna dignissim at. Integer dictum, odio vitae commodo faucibus, risus tortor convallis nunc, vel aliquam metus neque sed ex. Nullam et eleifend odio, nec eleifend ex. Aenean urna turpis, blandit vel eleifend sed, eleifend nec urna.`,
   style: {
-    fontFamily: 'Gill Sans Extrabold, sans-serif',
+    fontFamily: 'Verdana',
     fontSize: '14px',
-    color: '#fc7e7e',
-    backgroundColor: '#cecece'
+    color: '#303030',
+    backgroundColor: '#ffffff'
   },
   customFields: {
     fooBody: 'barBody'
@@ -38,12 +46,12 @@ const body = {
 }
 
 const accept = {
-  text: "Accept",
+  text: "I Accept",
   style: {
-    fontFamily: 'Gill Sans Extrabold, sans-serif',
-    fontSize: '18px',
-    color: '#fc7e7e',
-    backgroundColor: '#cecece'
+    fontFamily: 'Arial',
+    fontSize: '16px',
+    color: '#ffffff',
+    backgroundColor: '#1890ff'
   },
   customFields: {
     fooActionAccept: 'barActionAccept'
@@ -53,12 +61,12 @@ const accept = {
 }
 
 const reject = {
-  text: "Reject",
+  text: "I Reject",
   style: {
-    fontFamily: 'Gill Sans Extrabold, sans-serif',
-    fontSize: '18px',
-    color: '#fc7e7e',
-    backgroundColor: '#cecece'
+    fontFamily: 'Arial',
+    fontSize: '16px',
+    color: '#585858',
+    backgroundColor: '#ebebeb'
   },
   customFields: {
     fooActionReject: 'barActionReject'
@@ -70,10 +78,10 @@ const reject = {
 const showPm = {
   text: "Show Options",
   style: {
-    fontFamily: 'Gill Sans Extrabold, sans-serif',
-    fontSize: '18px',
-    color: '#fc7e7e',
-    backgroundColor: '#cecece'
+    fontFamily: 'Arial',
+    fontSize: '16px',
+    color: '#1890ff',
+    backgroundColor: '#ffffff'
   },
   customFields: {
     fooActionShowOptions: 'barActionShowOptions'
