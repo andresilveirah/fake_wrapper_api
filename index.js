@@ -106,12 +106,34 @@ const dismiss = {
 }
 
 const msgJSON = {
-	title,
-	body,
-	actions: [accept, reject, showPm, dismiss],
-	customFields: {
+  title,
+  body,
+  actions: [accept, reject, showPm, dismiss],
+  customFields: {
     fooMessage: 'barMessage'
   }
+}
+
+const TCData = {
+  "IABTCF_CmpSdkID": 6,
+  "IABTCF_CmpSdkVersion": 1,
+  "IABTCF_PolicyVersion": 2,
+  "IABTCF_gdprApplies": 1,
+  "IABTCF_PublisherCC": "AA",
+  "IABTCF_PurposeOneTreatment": 0,
+  "IABTCF_UseNonStandardStacks": 1,
+  "IABTCF_TCString": "TCFv2 Consent String Here",
+  "IABTCF_VendorConsents": "000001000101000",
+  "IABTCF_VendorLegitimateInterests": "000001000101000",
+  "IABTCF_PurposeConsents": "000001000101000",
+  "IABTCF_PurposeLegitimateInterests": "000001000101000",
+  "IABTCF_SpecialFeaturesOptIns": "000001000101000",
+  "IABTCF_PublisherRestrictions42": "2",
+  "IABTCF_PublisherRestrictions66": "0",
+  "IABTCF_PublisherConsent": "000001000101000",
+  "IABTCF_PublisherLegitimateInterests": "000001000101000",
+  "IABTCF_PublisherCustomPurposesConsents": "000001000101000",
+  "IABTCF_PublisherCustomPurposesLegitimateInterests": "000001000101000"
 }
 
 const realWrapperApiUrl = 'https://wrapper-api.sp-prod.net'
@@ -128,7 +150,7 @@ app.post('/gdpr/native-message', (req, res) => {
   fetchRealWrapperApi('/gdpr/message-url', req.body)
     .then(response => response.json())
     .then(({ url, err, ...restResponse }) => {
-      if(err) {
+      if (err) {
         return res.status(500).json({ err })
       }
 
@@ -143,11 +165,35 @@ app.post('/gdpr/consent/', (req, res) => {
     .then(response => response.json())
     .then(response => {
       const { err, ...restResponse } = response
-      if(err) {
+      if (err) {
         return res.status(500).json({ err })
       }
 
       return res.status(200).json({ ...restResponse })
+    })
+})
+
+app.post('tcfv2/v1/gdpr/message-url/', (req, res) => {
+  fetchRealWrapperApi('/gdpr/message-url', req.body)
+    .then(response => response.json())
+    .then(({ url, err, ...restResponse }) => {
+      if (err) {
+        return res.status(500).json({ err })
+      }
+      restResponse.userConsent = {... restResponse.userConsent, TCData};
+      return res.status(200).json({ ...restResponse})
+    })
+})
+
+app.post('tcfv2/v1/gdpr/consent/', (req, res) => {
+  fetchRealWrapperApi('/gdpr/consent', req.body)
+    .then(response => response.json())
+    .then(({ url, err, ...restResponse }) => {
+      if (err) {
+        return res.status(500).json({ err })
+      }
+      restResponse.userConsent = {...restResponse.userConsent, TCData};
+      return res.status(200).json({ ...restResponse})
     })
 })
 
