@@ -192,7 +192,7 @@ app.post('tcfv2/v1/gdpr/consent/', (req, res) => {
       if (err) {
         return res.status(500).json({ err })
       }
-      restResponse.userConsent = {...restResponse.userConsent, TCData};
+      restResponse.consents = {...restResponse.consents, TCData};
       return res.status(200).json({ ...restResponse})
     })
 })
