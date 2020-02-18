@@ -176,24 +176,24 @@ app.post('/gdpr/consent/', (req, res) => {
 app.post('/tcfv2/v1/gdpr/message-url/', (req, res) => {
   fetchRealWrapperApi('/gdpr/message-url', req.body)
     .then(response => response.json())
-    .then(({ url, err, ...restResponse }) => {
+    .then(({ err, ...restResponse }) => {
       if (err) {
         return res.status(500).json({ err })
       }
-      restResponse.userConsent = {... restResponse.userConsent, TCData};
-      return res.status(200).json({ ...restResponse})
+      restResponse.userConsent = { ...restResponse.userConsent, TCData };
+      return res.status(200).json({ ...restResponse })
     })
 })
 
 app.post('/tcfv2/v1/gdpr/consent/', (req, res) => {
   fetchRealWrapperApi('/gdpr/consent', req.body)
     .then(response => response.json())
-    .then(({ url, err, ...restResponse }) => {
+    .then(({ err, ...restResponse }) => {
       if (err) {
         return res.status(500).json({ err })
       }
-      restResponse.userConsent = {... restResponse.userConsent, TCData};
-      return res.status(200).json({ ...restResponse})
+      restResponse.userConsent = { ...restResponse.userConsent, TCData };
+      return res.status(200).json({ ...restResponse })
     })
 })
 
