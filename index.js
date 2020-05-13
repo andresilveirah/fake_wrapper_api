@@ -197,4 +197,22 @@ app.post('/tcfv2/v1/gdpr/consent/', (req, res) => {
     })
 })
 
+// POST https://wrapper-api.sp-prod.net/tcfv2/v1/gdpr/custom-consent?inApp=true
+// {
+// 	"vendors": ["5e37fc3e56a5e60e003a7124"],
+// 	"categories": [],
+// 	"legIntCategories": [],
+// 	"consentUUID": "2ce05e8d-0c1d-40d0-8872-ee95447f4aee",
+// 	"propertyId": 7639
+// }
+app.post('/tcfv2/v1/gdpr/custom-consent/', (req, res) => {
+  return res.status(200).json({
+    consentUUID: req.body.consentUUID,
+    specialFeatures: [],
+    vendors: req.body.vendors,
+    categories: req.body.categories,
+    legIntCategories: req.body.legIntCategories
+  })
+})
+
 app.listen(config.port, () => console.log(`FAKE Wrapper API - listening on port ${config.port}`))
