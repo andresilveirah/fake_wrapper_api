@@ -114,29 +114,40 @@ const msgJSON = {
   }
 }
 
-const TCData = {
-  "IABTCF_CmpSdkID": 6,
-  "IABTCF_CmpSdkVersion": 1,
-  "IABTCF_PolicyVersion": 2,
-  "IABTCF_gdprApplies": 1,
-  "IABTCF_PublisherCC": "AA",
-  "IABTCF_PurposeOneTreatment": 0,
-  "IABTCF_UseNonStandardStacks": 1,
-  "IABTCF_TCString": "TCFv2 Consent String Here",
-  "IABTCF_VendorConsents": "000001000101000",
-  "IABTCF_VendorLegitimateInterests": "000001000101000",
-  "IABTCF_PurposeConsents": "000001000101000",
-  "IABTCF_PurposeLegitimateInterests": "000001000101000",
-  "IABTCF_SpecialFeaturesOptIns": "000001000101000",
-  "IABTCF_PublisherRestrictions42": "2",
-  "IABTCF_PublisherRestrictions66": "0",
-  "IABTCF_PublisherConsent": "000001000101000",
-  "IABTCF_PublisherLegitimateInterests": "000001000101000",
-  "IABTCF_PublisherCustomPurposesConsents": "000001000101000",
-  "IABTCF_PublisherCustomPurposesLegitimateInterests": "000001000101000"
-}
-
 const realWrapperApiUrl = 'https://wrapper-api.sp-prod.net'
+
+const vendorGrants = {
+  "5e4a5fbf26de4a77922b38a6": {
+    vendorGrant: true,
+    purposeGrants: {
+      "5e87321eb31ef52cd96cc552": true,
+      "5e87321eb31ef52cd96cc553": true,
+      "5e87321eb31ef52cd96cc554": true,
+      "5e87321eb31ef52cd96cc555": true,
+      "5e87321eb31ef52cd96cc556": true,
+    }
+  },
+  "5e7ced57b8e05c5a7d171cda": {
+    vendorGrant: false,
+    purposeGrants: {
+      "5e87321eb31ef52cd96cc552": false,
+      "5e87321eb31ef52cd96cc553": true,
+      "5e87321eb31ef52cd96cc554": true,
+      "5e87321eb31ef52cd96cc555": true,
+      "5e87321eb31ef52cd96cc556": true,
+    }
+  },
+  "5e37fc3e56a5e60e003a7124": {
+    vendorGrant: false,
+    purposeGrants: {
+      "5e87321eb31ef52cd96cc552": false,
+      "5e87321eb31ef52cd96cc553": false,
+      "5e87321eb31ef52cd96cc554": false,
+      "5e87321eb31ef52cd96cc555": false,
+      "5e87321eb31ef52cd96cc556": false,
+    }
+  }
+}
 
 const fetchRealWrapperApi = (url, body) => fetch(`${realWrapperApiUrl}${url}`, {
   method: 'POST',
@@ -174,25 +185,25 @@ app.post('/gdpr/consent/', (req, res) => {
 })
 
 app.post('/tcfv2/v1/gdpr/message-url/', (req, res) => {
-  fetchRealWrapperApi('/gdpr/message-url', req.body)
+  fetchRealWrapperApi('/tcfv2/v1/gdpr/message-url?inApp=true', req.body)
     .then(response => response.json())
     .then(({ err, ...restResponse }) => {
       if (err) {
         return res.status(500).json({ err })
       }
-      restResponse.userConsent = { ...restResponse.userConsent, TCData };
+      restResponse.userConsent = { vendorGrants, ...restResponse.userConsent };
       return res.status(200).json({ ...restResponse })
     })
 })
 
 app.post('/tcfv2/v1/gdpr/consent/', (req, res) => {
-  fetchRealWrapperApi('/gdpr/consent', req.body)
+  fetchRealWrapperApi('tcfv2/v1/gdpr/consent?inApp=true', req.body)
     .then(response => response.json())
     .then(({ err, ...restResponse }) => {
       if (err) {
         return res.status(500).json({ err })
       }
-      restResponse.userConsent = { ...restResponse.userConsent, TCData };
+      restResponse.userConsent = { vendorGrants, ...restResponse.userConsent };
       return res.status(200).json({ ...restResponse })
     })
 })
