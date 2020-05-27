@@ -197,7 +197,7 @@ app.post('/tcfv2/v1/gdpr/message-url/', (req, res) => {
 })
 
 app.post('/tcfv2/v1/gdpr/consent/', (req, res) => {
-  fetchRealWrapperApi('tcfv2/v1/gdpr/consent?inApp=true', req.body)
+  fetchRealWrapperApi('/tcfv2/v1/gdpr/consent?inApp=true', req.body)
     .then(response => response.json())
     .then(({ err, ...restResponse }) => {
       if (err) {
