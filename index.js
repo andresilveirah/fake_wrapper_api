@@ -165,28 +165,30 @@ const toQueryString = (params) => Object
 app.get('/ccpa/message-url', (req, res) => {
   fetchRealWrapperApi(`/ccpa/message-url?${toQueryString(req.query)}`, undefined, { method: 'GET' })
     .then(response => response.json())
-    .then(({ url, err, ...restResponse }) => {
+    .then(({ err, userConsent, ccpaApplies, ...restResponse }) => {
       if (err) {
         return res.status(500).json({ err })
       }
 
-      return url ?
-        res.status(200).json({ ...restResponse }) :
-        res.status(200).json({ ...restResponse })
+      userConsent.uspString = userConsent.uspString || "1YNN"
+      ccpaApplies = ccpaApplies || true
+
+      res.status(200).json({ ...restResponse, userConsent, ccpaApplies })
     })
 })
 
 app.post('/ccpa/consent/:actionType', (req, res) => {
   fetchRealWrapperApi(`/ccpa/consent/${req.params.actionType}`, req.body)
     .then(response => response.json())
-    .then(({ url, err, ...restResponse }) => {
+    .then(({ err, userConsent, ccpaApplies, ...restResponse }) => {
       if (err) {
         return res.status(500).json({ err })
       }
 
-      return url ?
-        res.status(200).json({ ...restResponse }) :
-        res.status(200).json({ ...restResponse })
+      userConsent.uspString = userConsent.uspString || "1YNN"
+      ccpaApplies = ccpaApplies || true
+
+      res.status(200).json({ ...restResponse, userConsent, ccpaApplies })
     })
 })
 
