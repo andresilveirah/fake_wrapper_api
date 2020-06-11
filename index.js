@@ -149,12 +149,45 @@ const vendorGrants = {
   }
 }
 
-const fetchRealWrapperApi = (url, body) => fetch(`${realWrapperApiUrl}${url}`, {
-  method: 'POST',
+const fetchRealWrapperApi = (url, body, options = { method: 'POST' }) => fetch(`${realWrapperApiUrl}${url}`, {
+  ...options,
   headers: {
     'Content-Type': 'application/json'
   },
   body: JSON.stringify(body)
+})
+
+const toQueryString = (params) => Object
+  .keys(params)
+  .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`)
+  .join('&')
+
+app.get('/ccpa/message-url', (req, res) => {
+  fetchRealWrapperApi(`/ccpa/message-url?${toQueryString(req.query)}`, undefined, { method: 'GET' })
+    .then(response => response.json())
+    .then(({ url, err, ...restResponse }) => {
+      if (err) {
+        return res.status(500).json({ err })
+      }
+
+      return url ?
+        res.status(200).json({ ...restResponse }) :
+        res.status(200).json({ ...restResponse })
+    })
+})
+
+app.post('/ccpa/consent/:actionType', (req, res) => {
+  fetchRealWrapperApi(`/ccpa/consent/${req.params.actionType}`, req.body)
+    .then(response => response.json())
+    .then(({ url, err, ...restResponse }) => {
+      if (err) {
+        return res.status(500).json({ err })
+      }
+
+      return url ?
+        res.status(200).json({ ...restResponse }) :
+        res.status(200).json({ ...restResponse })
+    })
 })
 
 app.post('/gdpr/native-message', (req, res) => {
