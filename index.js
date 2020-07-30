@@ -8,6 +8,7 @@ const geolookup = require('./geolookup')
 const config = { port: process.env.PORT || 80 }
 
 const app = express()
+app.set('trust proxy', true)
 
 app.use(json())
 app.use(logger)
@@ -84,12 +85,14 @@ app.post('/tcfv2/v1/gdpr/custom-consent/', (req, res) =>
     ))
 
 app.post('/all/v1/message-url', async (req, res) => {
-  const location = await geolookup(req.query.ip || req.ip)
+  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const location = await geolookup(ip)
   const targetingParams = JSON.stringify({ location })
   const body = {...req.body, targetingParams, alwaysDisplayDNS: false }
 
-  console.log(body)
-  console.log(toQueryString(body));
+  console.log("IP: ", ip)
+  console.log("Body to GDPR: ", body)
+  console.log("Params to CCPA: ", toQueryString(body));
 
   let [gdprResult, ccpaResult] = await Promise.all([
     fetchRealWrapperApi('/tcfv2/v1/gdpr/message-url?inApp=true', body),
