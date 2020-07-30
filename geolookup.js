@@ -3,9 +3,9 @@ const fetch = require('./fetch');
 const timezoneToRegion = ({ timezone }) => {
   switch (true) {
     case /^America/.test(timezone):
-      return 'US'
+      return 'CCPA'
     case /^Europe/.test(timezone):
-      return 'EUR'
+      return 'GDPR'
     default:
       return 'Unknown'
   }
