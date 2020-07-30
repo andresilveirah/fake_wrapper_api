@@ -3,6 +3,7 @@ const { json } = require('body-parser')
 
 const fetch = require('./fetch');
 const logger = require('./logger')
+const geolookup = require('./geolookup')
 
 const config = { port: process.env.PORT || 80 }
 
@@ -81,5 +82,31 @@ app.post('/tcfv2/v1/gdpr/custom-consent/', (req, res) =>
          res.status(500).json({ err }) :
          res.status(200).json({ ...restResponse })
     ))
+
+app.post('/all/v1/message-url', async (req, res) => {
+  const location = await geolookup(req.query.ip || req.ip)
+  const targetingParams = JSON.stringify({ location })
+  const body = {...req.body, targetingParams, alwaysDisplayDNS: false }
+
+  console.log(body)
+  console.log(toQueryString(body));
+
+  let [gdprResult, ccpaResult] = await Promise.all([
+    fetchRealWrapperApi('/tcfv2/v1/gdpr/message-url?inApp=true', body),
+    fetchRealWrapperApi(`/ccpa/message-url?${toQueryString(body)}`, undefined, { method: 'GET' })
+  ]);
+
+  if (gdprResult.err || ccpaResult.err) {
+    res.status(500).json({ err: {
+      gdpr: gdprResult.err,
+      ccpa: ccpaResult.err
+    }})
+  } else {
+    res.status(200).json({
+      gdpr: { ...gdprResult, gdprApplies: location === "GDPR" },
+      ccpa: { ...ccpaResult, ccpaApplies: location === "CCPA" }
+    })
+  }
+})
 
 app.listen(config.port, () => console.log(`FAKE Wrapper API - listening on port ${config.port}`))
