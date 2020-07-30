@@ -85,7 +85,7 @@ app.post('/tcfv2/v1/gdpr/custom-consent/', (req, res) =>
     ))
 
 app.post('/all/v1/message-url', async (req, res) => {
-  const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const ip = req.query.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const location = await geolookup(ip)
   const targetingParams = JSON.stringify({ location })
   const body = {...req.body, targetingParams, alwaysDisplayDNS: false }
