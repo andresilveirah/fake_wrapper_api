@@ -40,11 +40,6 @@ router.post('/consent', async (req, res) => {
   console.log({body});
 
   let [gdprResult, ccpaResult] = await Promise.all([gdprConsent(body), ccpaConsent(body)])
-    .catch((e) => {
-      console.log(e.stack)
-      res.status(500).json({internalError: e.stack})
-      return
-    });
 
   if (gdprResult.err || ccpaResult.err) {
     res.status(500).json({ err: { gdpr: gdprResult.err, ccpa: ccpaResult.err }})
