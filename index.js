@@ -14,6 +14,6 @@ app.use(logger)
 app.use('/gdpr/v1/gdpr', require('./routes/tcfv1'))
 app.use('/tcfv2/v1/gdpr', require('./routes/tcfv2'))
 app.use('/ccpa', require('./routes/ccpa'))
-app.use('/all/v1', require('./routes/tcfv2'))
+app.use('/all/v1', require('./routes/all'))
 
 app.listen(config.port, () => console.log(`FAKE Wrapper API - listening on port ${config.port}`))
