@@ -5,6 +5,18 @@ const geolookup = require('./helpers/geolookup')
 
 const router = Router()
 
+const gdprConsent = async (body, location) => {
+  const gdprReq = {...body, ...body.gdpr}
+  console.log({gdprReq})
+  return location === "GDPR" ? tcfv2.consent(gdprReq) : tcfv2.getMessage(gdprReq);
+}
+
+const ccpaConsent = async (body, location) => {
+  const ccpaReq = {...body, ...body.ccpa}
+  console.log({ccpaReq})
+  return location === "CCPA" ? ccpa.consent(ccpaReq) : ccpa.getMessage(ccpaReq);
+}
+
 router.post('/message-url', async (req, res) => {
   const ip = req.query.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const location = await geolookup(ip)
@@ -39,7 +51,10 @@ router.post('/consent', async (req, res) => {
   console.log({ip, location})
   console.log({body});
 
-  let [gdprResult, ccpaResult] = await Promise.all([gdprConsent(body), ccpaConsent(body)])
+  let [gdprResult, ccpaResult] = await Promise.all([
+    gdprConsent(body, location),
+    ccpaConsent(body, location)
+  ])
 
   if (gdprResult.err || ccpaResult.err) {
     res.status(500).json({ err: { gdpr: gdprResult.err, ccpa: ccpaResult.err }})
@@ -50,18 +65,6 @@ router.post('/consent', async (req, res) => {
     gdpr: { ...gdprResult, gdprApplies: location === "GDPR" },
     ccpa: { ...ccpaResult, ccpaApplies: location === "CCPA" }
   })
-
-  async function gdprConsent(body){
-    const gdprReq = {...body, ...body.gdpr}
-    console.log({gdprReq})
-    return location === "GDPR" ? tcfv2.consent(gdprReq) : tcfv2.getMessage(gdprReq);
-  }
-
-  async function ccpaConsent(body){
-    const ccpaReq = {...body, ...body.ccpa}
-    console.log({ccpaReq})
-    return location === "CCPA" ? ccpa.consent(ccpaReq) : ccpa.getMessage(ccpaReq);
-  }
 })
 
 module.exports = router
