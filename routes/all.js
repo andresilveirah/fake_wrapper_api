@@ -30,7 +30,10 @@ router.post('/message-url', async (req, res) => {
   console.log({gdprReq})
   console.log({ccpaReq})
 
-  let [gdprResult, ccpaResult] = await Promise.all([tcfv2.getMessage(body), ccpa.getMessage(ccpaReq)]);
+  let [gdprResult, ccpaResult] = await Promise.all([
+    tcfv2.getMessage(gdprReq),
+    ccpa.getMessage(ccpaReq)
+  ]);
 
   if (gdprResult.err || ccpaResult.err) {
     res.status(500).json({ err: { gdpr: gdprResult.err, ccpa: ccpaResult.err }})
