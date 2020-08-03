@@ -1,6 +1,6 @@
 const { Router } = require('express')
 
-const { gdpr: { tcfv2 }, ccpa, toQueryString } = require('./helpers/spClient')
+const { gdpr: { tcfv2 }, ccpa } = require('./helpers/spClient')
 const geolookup = require('./helpers/geolookup')
 
 const router = Router()
