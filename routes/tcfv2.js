@@ -18,11 +18,4 @@ router.post('/consent/', (req, res) =>
         res.status(200).json({ ...restResponse })
     ))
 
-router.post('/custom-consent/', (req, res) =>
-  tcfv2.customConsent(req.body).then(({ err, ...restResponse }) =>
-      err ?
-         res.status(500).json({ err }) :
-         res.status(200).json({ ...restResponse })
-    ))
-
 module.exports = router

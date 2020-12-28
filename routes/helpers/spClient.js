@@ -18,14 +18,9 @@ const toQueryString = (params) => Object
 
 module.exports = {
   gdpr: {
-    tcfv1: {
-      getMessage: body => fetchRealWrapperApi('/gdpr/message-url', body),
-      consent: body => fetchRealWrapperApi('/consent', body)
-    },
     tcfv2: {
       getMessage: body => fetchRealWrapperApi('/tcfv2/v1/gdpr/message-url?inApp=true', body),
       consent: body => fetchRealWrapperApi('/tcfv2/v1/gdpr/consent?inApp=true', body),
-      customConsent: body => fetchRealWrapperApi('/tcfv2/v1/gdpr/consent?inApp=true', body)
     }
   },
   ccpa: {

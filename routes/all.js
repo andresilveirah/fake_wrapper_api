@@ -41,8 +41,22 @@ router.post('/message-url', async (req, res) => {
   }
 
   res.status(200).json({
-    gdpr: { ...gdprResult, gdprApplies: location === "GDPR" },
-    ccpa: { ...ccpaResult, ccpaApplies: location === "CCPA" }
+    message: {
+      legislation: location,
+      url: gdprResult.url || ccpa.url
+    },
+    gdpr: { 
+      applies: location === "GDPR",
+      uuid: gdprResult.uuid,
+      userConsent: gdprResult.userConsent,
+      meta: gdprResult.meta
+    },
+    ccpa: { 
+      applies: location === "CCPA",
+      uuid: ccpaResult.uuid,
+      userConsent: ccpaResult.userConsent,
+      meta: ccpaResult.meta
+    }
   })
 })
 
