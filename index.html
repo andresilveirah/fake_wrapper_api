@@ -212,6 +212,26 @@
                 inDebounce = setTimeout(() => func.apply(context, args), delay)
             }
         }
+        const throttle = (func, limit) => {
+            let lastFunc
+            let lastRan
+            return function() {
+                const context = this
+                const args = arguments
+                if (!lastRan) {
+                func.apply(context, args)
+                lastRan = Date.now()
+                } else {
+                clearTimeout(lastFunc)
+                lastFunc = setTimeout(function() {
+                    if ((Date.now() - lastRan) >= limit) {
+                    func.apply(context, args)
+                    lastRan = Date.now()
+                    }
+                }, limit - (Date.now() - lastRan))
+                }
+            }
+        }
         const getMessage = ({ accountId, propertyId, propertyHref, targetingParams }) => {
             const myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
@@ -305,15 +325,14 @@
                 eventsList.removeChild(eventsList.lastElementChild)
             }
         }
-        const inputChangeHandler = debounce(render, 2000)
-        
+        const debouncedRender = debounce(throttle(render, 1000), 1000)
+        const inputChangeHandler = ({ currentTarget: {name, value} }) => setState({ [name]: value}, debouncedRender)
+
         const renderInputs = ({ accountId, propertyName, propertyId }) => {
             document.querySelector('input[name="accountId"]').value = accountId
             document.querySelector('input[name="propertyId"]').value = propertyId
             document.querySelector('input[name="propertyName"]').value = propertyName
-
-            Array.from(document.querySelectorAll('input')).forEach(i => i.removeEventListener("input", inputChangeHandler))
-            Array.from(document.querySelectorAll('input')).forEach(i => i.addEventListener("input", inputChangeHandler))
+            Array.from(document.querySelectorAll('input')).forEach(i => i.oninput = inputChangeHandler)
         }
         const renderConsents = ({ userConsents }) => {
             const consentsTab = document.querySelector('#user-consents')
@@ -322,7 +341,9 @@
             consentsTab.lastChild.remove()
             consentsTab.appendChild(consentsElement)
         }
-        function render () {            
+
+        function render () {
+            debugger
             renderInputs({ ...state })
             renderConsents({ ...state })
             renderEventsLog()
