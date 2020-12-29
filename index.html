@@ -278,15 +278,34 @@
         const handleMessageEvent = (event) => {
             const { data: {name, ...payload } } = event
             const renderingApp = document.querySelector('iframe').contentWindow
-            if(name === "sp.readyForPreload") {
-                renderingApp.postMessage({
-                    name: 'sp.loadMessage',
-                    message_json: state.serverResponse.msgJSON,
-                    message_choice: state.serverResponse.choiceOptions,
-                    categories: state.serverResponse.stackInfo.categories,
-                    site_id: state.serverResponse.siteId,
-                    language: state.serverResponse.stackInfo.language
-                }, '*')
+            switch (name) {
+                case 'sp.hideMessage':
+                    console.log(payload)
+                    const action = {
+                        type: payload.actions ? payload.actions.find(a => a.type === "choice").data.type : payload.actionType,
+                        payload: payload.actions ? payload.actions.find(a => a.type === "choice").data : payload
+                    }
+                    console.log(action)
+                    switch (action.type) {
+                        case 12: // Show Options
+                            renderingApp.location = action.payload.iframe_url
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
+                case 'sp.readyForPreload':
+                    renderingApp.postMessage({
+                        name: 'sp.loadMessage',
+                        message_json: state.serverResponse.msgJSON,
+                        message_choice: state.serverResponse.choiceOptions,
+                        categories: state.serverResponse.stackInfo.categories,
+                        site_id: state.serverResponse.siteId,
+                        language: state.serverResponse.stackInfo.language
+                    }, '*')
+                    break;
+                default:
+                    break;
             }
             setState({ renderingAppEvents: [...state.renderingAppEvents, { name, payload }] }, renderEventsLog)
         }
