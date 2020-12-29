@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fake</title>
+    <style>
+        * { 
+            margin: 0;
+            padding: 0;
+            text-decoration: none;
+            list-style: none;
+            box-sizing: border-box !important;
+            border: none;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+        .container {
+            display: flex;
+            box-sizing: border-box;
+            height: 100%;
+            width: 100%;
+        }
+        .horizontal {
+            min-width: 50%;
+            max-width: 50%;
+            min-height: 100%;
+        }
+        .vertical {
+            flex-direction: column;
+        }
+        .panel {
+            flex-grow: 1;
+            width: 100%;
+            height: 100%;
+        }
+        .vertical .panel {
+            overflow-y: scroll;
+            height: 50%;
+        }
+        code {
+            background-color: #eee;
+            padding: 24px;
+            overflow-y: scroll;
+            word-wrap: break-word;
+            display: block; 
+        }
+        #events {
+            background-color: #eee;
+            padding: 24px;
+            overflow-y: scroll;
+            word-wrap: break-word;
+            display: block;
+        }
+        #events-list li {
+            display: block;
+        }
+        .control {
+            padding: 12px;
+            width: 100%;
+        }
+        label, input {
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: large;
+        }
+        input {
+            border: 1px solid #ccc;
+            padding: 8px;
+            width: 100%;
+        }
+        .tablinks-container {
+            display: block;
+        }
+        .tablinks {
+            display: flex;
+            margin-bottom: -2px;
+        }
+        .tablink {
+            display: block;
+            text-decoration: underline;
+            font: 18px Arial;
+            padding: 12px;
+        }
+        .active {
+            z-index: 1;
+            border-top: 2px solid #ccc;
+            border-right: 2px solid #ccc;
+            border-left: 2px solid #ccc;
+            border-bottom: 2px solid white;
+            color: peru;
+        }
+        .tab {
+            z-index: -1;
+            border-top: 2px solid #ccc;
+            display: none;
+        }
+        .open {
+            display: block !important;
+        }
+        .string { color: green; }
+        .number { color: darkorange; }
+        .boolean { color: blue; }
+        .null { color: magenta; }
+        .key { color: purple; }
+        @media only screen and (max-width: 600px) {
+            .container {
+                flex-direction: column;
+            }
+            .panel {
+                margin: 0px;
+                padding: 0px;
+                width: 100%;
+                height: 100%;
+                align-content: stretch;
+            }
+            .horizontal {
+                min-width: 100%;
+                max-width: 100%;
+            }
+            .vertical .panel {
+                overflow: visible;
+                height: auto;
+            }
+            #events {
+                margin: 12px 0px 0px !important;
+                padding: 12px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <iframe class="panel horizontal" src="https://cdn.privacy-mgmt.com/index.html?preload_message=true"></iframe>
+        <div class="panel container vertical">
+            <div class="panel">
+                <form class="container vertical" action="#" autocomplete="off">
+                    <input autocomplete="false" name="hidden" type="text" style="display:none;">
+                    <div class="control">
+                        <label for="accountId">Account Id</label>
+                        <input name="accountId" type="number" placeholder="22" />
+                    </div>
+                    <div class="control">
+                        <label for="propertyId">Property Id</label>
+                        <input name="propertyId" type="number" placeholder="40" />
+                    </div>
+                    <div class="control">
+                        <label for="propertyName">Property Name</label>
+                        <input name="propertyName" type="text" placeholder="www.sourcepoint.com" />
+                    </div>
+                </form>
+            </div>
+            <div id="tabs" class="panel container vertical">
+                <nav class="tablinks-container">
+                    <ul class="tablinks">
+                        <li><a class="tablink active" data-tab-link="events" href="#events">Events</a></li>
+                        <li><a class="tablink" data-tab-link="consents" href="#consents">Consents</a></li>
+                    </ul>
+                </nav>
+                <div class="tab open" data-tab-name="events">
+                    <code id="events">
+                        <ul id="events-list"></ul>
+                    </code>
+                </div>
+                <div class="tab" data-tab-name="consents">
+                    <code id="user-consents">
+                    </code>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        Array.from(document.querySelectorAll('.tablink')).forEach(link => link.addEventListener('click', event => {
+            document.querySelector('.tablink.active').classList.remove('active')
+            event.currentTarget.classList.add('active')
+            window.location.hash = event.currentTarget.dataset.tabLink
+            event.preventDefault()
+        }))
+
+        window.addEventListener('load', _ => {
+            document.querySelector('.tab.open').classList.remove('open')
+            document.querySelector(`[data-tab-name="${location.hash.replace('#', '')}"]`).classList.add('open')
+        })
+
+        window.addEventListener('hashchange', _ => {
+            document.querySelector('.tab.open').classList.remove('open')
+            document.querySelector(`[data-tab-name="${location.hash.replace('#', '')}"]`).classList.add('open')
+        })
+
+        document.querySelector(`[data-tab-link="${location.hash.replace('#', '')}"]`) ? 
+            document.querySelector(`[data-tab-link="${location.hash.replace('#', '')}"]`).click() :
+            document.querySelector(".tablink.active").click()
+    </script>
+    <script>
+        let state = {
+            accountId: 22,
+            propertyId: 40,
+            propertyName: "www.sourcepoint.com",
+            userConsents: {}
+        }
+        const setState = (newState, renderCallback) => {
+            state = { ...state, ...newState }
+            renderCallback(state)
+        }
+        const debounce = (func, delay) => {
+            let inDebounce
+            return function() {
+                const context = this
+                const args = arguments
+                clearTimeout(inDebounce)
+                inDebounce = setTimeout(() => func.apply(context, args), delay)
+            }
+        }
+        const getMessage = ({ accountId, propertyId, propertyHref, targetingParams }) => {
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            const requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: JSON.stringify({
+                    accountId,
+                    propertyId,
+                    targetingParams,
+                    propertyHref,
+                    requestUUID: "test",
+                    meta: "{}"
+                }),
+            };
+            return fetch("https://cdn.privacy-mgmt.com/wrapper/tcfv2/v1/gdpr/native-message", requestOptions)
+                .then(result => result.json())
+                .catch(error => console.error(error));
+        }
+        const syntaxHighlight = (json) => {
+            if (typeof json != 'string') {
+                json = JSON.stringify(json, undefined, 2);
+            }
+            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                var cls = 'number';
+                if (/^"/.test(match)) {
+                    if (/:$/.test(match)) {
+                        cls = 'key';
+                    } else {
+                        cls = 'string';
+                    }
+                } else if (/true|false/.test(match)) {
+                    cls = 'boolean';
+                } else if (/null/.test(match)) {
+                    cls = 'null';
+                }
+                return '<span class="' + cls + '">' + match + '</span>';
+            });
+        }
+        const logEvent = (event) => {
+            const { data: { name, ...payload }} = event
+            const eventItem = document.createElement('li')
+            const payloadElement = document.createElement('pre')
+            eventItem.innerHTML = `${name}:`
+            payloadElement.innerHTML = syntaxHighlight(JSON.stringify(payload || {}, undefined, 4))
+            eventItem.appendChild(payloadElement)
+            document.querySelector("#events-list").appendChild(eventItem)
+        }
+        const renderMessage = ({ accountId, propertyId, propertyName }) => getMessage({
+            accountId,
+            propertyId,
+            targetingParams: "{\"test\":\"test\"}",
+            propertyHref: "https://"+propertyName
+        }).then(result => {
+            setState({ 
+                userConsents: {
+                    consentUUID:  result.uuid,
+                    consentString: result.euconsent,
+                    addtlConsent: result.addtlConsent,
+                    grants: result.grants,
+                    gdprApplies: result.gdprApplies,
+                    customVendorsResponse: result.customVendorsResponse
+                }
+            }, renderConsents)
+
+            const handleMessageEvent = (event) => {
+                if(event.data.name === "sp.readyForPreload") {
+                    renderingApp.postMessage({
+                        name: 'sp.loadMessage',
+                        message_json: result.msgJSON,
+                        message_choice: result.choiceOptions,
+                        categories: result.stackInfo.categories,
+                        site_id: result.siteId,
+                        language: result.stackInfo.language
+                    }, '*')
+                }
+            }
+            const iframe = document.querySelector('iframe')
+            iframe.src = "https://cdn.privacy-mgmt.com/index.html?preload_message=true&message_id="+result.messageId+"&site_id="+result.propertyId
+            const renderingApp = iframe.contentWindow
+            window.removeEventListener("message", logEvent);
+            window.removeEventListener("message", handleMessageEvent);
+
+            window.addEventListener("message", logEvent)
+            window.addEventListener("message", handleMessageEvent)
+        })
+        const renderEventsLog = () => {
+            const eventsList = document.querySelector("#events-list")
+            while (eventsList.lastElementChild) {
+                eventsList.removeChild(eventsList.lastElementChild)
+            }
+        }
+        const inputChangeHandler = debounce(render, 2000)
+        
+        const renderInputs = ({ accountId, propertyName, propertyId }) => {
+            document.querySelector('input[name="accountId"]').value = accountId
+            document.querySelector('input[name="propertyId"]').value = propertyId
+            document.querySelector('input[name="propertyName"]').value = propertyName
+
+            Array.from(document.querySelectorAll('input')).forEach(i => i.removeEventListener("input", inputChangeHandler))
+            Array.from(document.querySelectorAll('input')).forEach(i => i.addEventListener("input", inputChangeHandler))
+        }
+        const renderConsents = ({ userConsents }) => {
+            const consentsTab = document.querySelector('#user-consents')
+            const consentsElement = document.createElement('pre')
+            consentsElement.innerHTML = syntaxHighlight(JSON.stringify(userConsents || {}, undefined, 4))
+            consentsTab.lastChild.remove()
+            consentsTab.appendChild(consentsElement)
+        }
+        function render () {            
+            renderInputs({ ...state })
+            renderConsents({ ...state })
+            renderEventsLog()
+            renderMessage({ ...state })
+        }
+
+        render()
+    </script>
+</body>
+</html>
