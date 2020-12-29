@@ -37,7 +37,7 @@
             height: 100%;
         }
         .vertical .panel {
-            overflow-y: hidden;
+            overflow-y: scroll;
             height: 50%;
         }
         code {
@@ -305,10 +305,15 @@
                 eventsList.removeChild(eventsList.lastElementChild)
             }
         }
+        const inputChangeHandler = debounce(render, 2000)
+        
         const renderInputs = ({ accountId, propertyName, propertyId }) => {
             document.querySelector('input[name="accountId"]').value = accountId
             document.querySelector('input[name="propertyId"]').value = propertyId
             document.querySelector('input[name="propertyName"]').value = propertyName
+
+            Array.from(document.querySelectorAll('input')).forEach(i => i.removeEventListener("input", inputChangeHandler))
+            Array.from(document.querySelectorAll('input')).forEach(i => i.addEventListener("input", inputChangeHandler))
         }
         const renderConsents = ({ userConsents }) => {
             const consentsTab = document.querySelector('#user-consents')
@@ -317,14 +322,12 @@
             consentsTab.lastChild.remove()
             consentsTab.appendChild(consentsElement)
         }
-        const render = () => {            
+        function render () {            
             renderInputs({ ...state })
             renderConsents({ ...state })
             renderEventsLog()
             renderMessage({ ...state })
         }
-
-        Array.from(document.querySelectorAll('input')).forEach(i => i.addEventListener("input", debounce(render, 2000)))
 
         render()
     </script>
