@@ -197,11 +197,14 @@
             accountId: 22,
             propertyId: 40,
             propertyName: "www.sourcepoint.com",
-            userConsents: {}
+            userConsents: {},
+            serverResponse: {},
+            renderingAppEvents: []
         }
-        const setState = (newState, renderCallback) => {
+        const setState = (newState, renderCallback = () => {}) => {
             state = { ...state, ...newState }
             renderCallback(state)
+            console.debug(state)
         }
         const debounce = (func, delay) => {
             let inDebounce
@@ -272,22 +275,27 @@
                 return '<span class="' + cls + '">' + match + '</span>';
             });
         }
-        const logEvent = (event) => {
-            const { data: { name, ...payload }} = event
-            const eventItem = document.createElement('li')
-            const payloadElement = document.createElement('pre')
-            eventItem.innerHTML = `${name}:`
-            payloadElement.innerHTML = syntaxHighlight(JSON.stringify(payload || {}, undefined, 4))
-            eventItem.appendChild(payloadElement)
-            document.querySelector("#events-list").appendChild(eventItem)
+        const handleMessageEvent = (event) => {
+            const { data: {name, ...payload } } = event
+            const renderingApp = document.querySelector('iframe').contentWindow
+            if(name === "sp.readyForPreload") {
+                renderingApp.postMessage({
+                    name: 'sp.loadMessage',
+                    message_json: state.serverResponse.msgJSON,
+                    message_choice: state.serverResponse.choiceOptions,
+                    categories: state.serverResponse.stackInfo.categories,
+                    site_id: state.serverResponse.siteId,
+                    language: state.serverResponse.stackInfo.language
+                }, '*')
+            }
+            setState({ renderingAppEvents: [...state.renderingAppEvents, { name, payload }] }, renderEventsLog)
         }
         const renderMessage = ({ accountId, propertyId, propertyName }) => getMessage({
             accountId,
             propertyId,
             targetingParams: "{\"test\":\"test\"}",
             propertyHref: "https://"+propertyName
-        }).then(result => {
-            setState({ 
+        }).then(result => setState({ 
                 userConsents: {
                     consentUUID:  result.uuid,
                     consentString: result.euconsent,
@@ -295,39 +303,37 @@
                     grants: result.grants,
                     gdprApplies: result.gdprApplies,
                     customVendorsResponse: result.customVendorsResponse
-                }
-            }, renderConsents)
-
-            const handleMessageEvent = (event) => {
-                if(event.data.name === "sp.readyForPreload") {
-                    renderingApp.postMessage({
-                        name: 'sp.loadMessage',
-                        message_json: result.msgJSON,
-                        message_choice: result.choiceOptions,
-                        categories: result.stackInfo.categories,
-                        site_id: result.siteId,
-                        language: result.stackInfo.language
-                    }, '*')
-                }
-            }
+                },
+                serverResponse: result,
+                renderingAppEvents: []
+            }, state => {
+                renderConsents(state)
+                renderIframe()
+            })
+        )
+        const renderIframe = () => {
             const iframe = document.querySelector('iframe')
-            iframe.src = "https://cdn.privacy-mgmt.com/index.html?preload_message=true&message_id="+result.messageId+"&site_id="+result.propertyId
-            const renderingApp = iframe.contentWindow
-            window.removeEventListener("message", logEvent);
+            iframe.src = "https://cdn.privacy-mgmt.com/index.html?preload_message=true"
             window.removeEventListener("message", handleMessageEvent);
-
-            window.addEventListener("message", logEvent)
             window.addEventListener("message", handleMessageEvent)
-        })
-        const renderEventsLog = () => {
+        }
+        const renderEventsLog = ({ renderingAppEvents }) => {
             const eventsList = document.querySelector("#events-list")
             while (eventsList.lastElementChild) {
                 eventsList.removeChild(eventsList.lastElementChild)
             }
+
+            renderingAppEvents.forEach(({ name, payload }) => {
+                const eventItem = document.createElement('li')
+                const payloadElement = document.createElement('pre')
+                eventItem.innerHTML = `${name}:`
+                payloadElement.innerHTML = syntaxHighlight(JSON.stringify(payload || {}, undefined, 4))
+                eventItem.appendChild(payloadElement)
+                document.querySelector("#events-list").appendChild(eventItem)
+            })
         }
         const debouncedRender = debounce(throttle(render, 1000), 1000)
         const inputChangeHandler = ({ currentTarget: {name, value} }) => setState({ [name]: value}, debouncedRender)
-
         const renderInputs = ({ accountId, propertyName, propertyId }) => {
             document.querySelector('input[name="accountId"]').value = accountId
             document.querySelector('input[name="propertyId"]').value = propertyId
@@ -343,11 +349,10 @@
         }
 
         function render () {
-            debugger
-            renderInputs({ ...state })
-            renderConsents({ ...state })
-            renderEventsLog()
-            renderMessage({ ...state })
+            renderInputs(state)
+            renderConsents(state)
+            renderEventsLog(state)
+            renderMessage(state)
         }
 
         render()
