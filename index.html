@@ -280,16 +280,16 @@
             const renderingApp = document.querySelector('iframe').contentWindow
             switch (name) {
                 case 'sp.hideMessage':
-                    console.log(payload)
                     const action = {
                         type: payload.actions ? payload.actions.find(a => a.type === "choice").data.type : payload.actionType,
                         payload: payload.actions ? payload.actions.find(a => a.type === "choice").data : payload
                     }
-                    console.log(action)
                     switch (action.type) {
                         case 12: // Show Options
                             renderingApp.location = action.payload.iframe_url
                             break;
+                        case 2: // cancel
+                            history.back()
                         default:
                             break;
                     }
@@ -352,12 +352,18 @@
             })
         }
         const debouncedRender = debounce(throttle(render, 1000), 1000)
-        const inputChangeHandler = ({ currentTarget: {name, value} }) => setState({ [name]: value}, debouncedRender)
         const renderInputs = ({ accountId, propertyName, propertyId }) => {
-            document.querySelector('input[name="accountId"]').value = accountId
-            document.querySelector('input[name="propertyId"]').value = propertyId
-            document.querySelector('input[name="propertyName"]').value = propertyName
-            Array.from(document.querySelectorAll('input')).forEach(i => i.oninput = inputChangeHandler)
+            const accountIdInput = document.querySelector('input[name="accountId"]')
+            accountIdInput.value = accountId
+            accountIdInput.oninput = () => setState({ accountId: Number(accountIdInput.value) }, debouncedRender)
+            
+            const propertyIdInput = document.querySelector('input[name="propertyId"]')
+            propertyIdInput.value = propertyId
+            propertyIdInput.oninput = () => setState({ propertyId: Number(propertyIdInput.value) }, debouncedRender)
+
+            const propertyNameInput = document.querySelector('input[name="propertyName"]')
+            propertyNameInput.value = propertyName
+            propertyNameInput.oninput = () => setState({ propertyName: propertyNameInput.value }, debouncedRender)
         }
         const renderConsents = ({ userConsents }) => {
             const consentsTab = document.querySelector('#user-consents')
