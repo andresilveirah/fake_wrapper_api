@@ -24,6 +24,8 @@
             width: 100%;
         }
         .horizontal {
+            min-width: 50%;
+            max-width: 50%;
             min-height: 100%;
         }
         .vertical {
@@ -35,7 +37,7 @@
             height: 100%;
         }
         .vertical .panel {
-            overflow-y: scroll;
+            overflow-y: hidden;
             height: 50%;
         }
         code {
@@ -113,6 +115,10 @@
                 height: 100%;
                 align-content: stretch;
             }
+            .horizontal {
+                min-width: 100%;
+                max-width: 100%;
+            }
             .vertical .panel {
                 overflow: visible;
                 height: auto;
@@ -168,7 +174,7 @@
         Array.from(document.querySelectorAll('.tablink')).forEach(link => link.addEventListener('click', event => {
             document.querySelector('.tablink.active').classList.remove('active')
             event.currentTarget.classList.add('active')
-            history.pushState(event.currentTarget.dataset.tabName)
+            window.location.hash = event.currentTarget.dataset.tabLink
             event.preventDefault()
         }))
 
