@@ -308,12 +308,10 @@
                         type: payload.actions ? payload.actions.find(a => a.type === "choice").data.type : payload.actionType,
                         payload: payload.actions ? payload.actions.find(a => a.type === "choice").data : payload
                     }
-                    console.log(action);
                     switch (action.type) {
                         case 11: // Accept All
                         case 13: // Reject All
                         case 1: // Save & Exit
-                        debugger
                             consent({ 
                                 ...state,
                                 uuid: state.userConsent.consentUUID,
