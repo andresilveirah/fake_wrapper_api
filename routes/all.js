@@ -17,7 +17,7 @@ const ccpaConsent = async (body, location) => {
   return location === "CCPA" ? ccpa.consent(ccpaReq) : ccpa.getMessage(ccpaReq);
 }
 
-router.post('/message-url', async (req, res) => {
+router.post('/native-message', async (req, res) => {
   const ip = req.query.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const location = await geolookup(ip)
   const targetingParams = JSON.stringify({ location })
@@ -26,9 +26,9 @@ router.post('/message-url', async (req, res) => {
   const gdprReq = {...body, ...body.gdpr}
   const ccpaReq = {...body, ...body.ccpa}
 
-  console.log({ip,location})
-  console.log({gdprReq})
-  console.log({ccpaReq})
+  console.log({ ip,location })
+  console.log({ gdprReq })
+  console.log({ ccpaReq })
 
   let [gdprResult, ccpaResult] = await Promise.all([
     tcfv2.getMessage(gdprReq),

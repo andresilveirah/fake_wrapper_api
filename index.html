@@ -132,7 +132,7 @@
 </head>
 <body>
     <div class="container">
-        <iframe class="panel horizontal" src="https://cdn.privacy-mgmt.com/index.html?preload_message=true"></iframe>
+        <iframe class="panel horizontal" src="/sp/index.html?preload_message=true"></iframe>
         <div class="panel container vertical">
             <div class="panel">
                 <form class="container vertical" action="#" autocomplete="off">
@@ -197,7 +197,7 @@
             accountId: 22,
             propertyId: 40,
             propertyName: "www.sourcepoint.com",
-            userConsents: {},
+            userConsent: {},
             serverResponse: {},
             renderingAppEvents: []
         }
@@ -250,7 +250,31 @@
                     meta: "{}"
                 }),
             };
-            return fetch("https://cdn.privacy-mgmt.com/wrapper/tcfv2/v1/gdpr/native-message", requestOptions)
+            return fetch("/tcfv2/v1/gdpr/native-message", requestOptions)
+                .then(result => result.json())
+                .catch(error => console.error(error));
+        }
+        const consent = ({ accountId, propertyId, propertyHref, actionType, uuid }) => {
+            const myHeaders = new Headers();
+            myHeaders.append("Content-Type", "application/json");
+            const requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: JSON.stringify({
+                    propertyId,
+                    propertyHref,
+                    accountId,
+                    actionType,
+                    choiceId: null,
+                    requestFromPM: true,
+                    privacyManagerId: "1234",
+                    uuid,
+                    requestUUID: "test",
+                    pmSaveAndExitVariables: {},
+                    meta: "{}",
+                }),
+            };
+            return fetch("/tcfv2/v1/gdpr/consent?inApp=true", requestOptions)
                 .then(result => result.json())
                 .catch(error => console.error(error));
         }
@@ -285,11 +309,24 @@
                         payload: payload.actions ? payload.actions.find(a => a.type === "choice").data : payload
                     }
                     switch (action.type) {
+                        case 11: // Accept All
+                            console.log(document.location)
+                            consent({ ...state, uuid: state.userConsent.consentUUID, actionType: action.type }).then(response => {
+                                setState({
+                                    userConsent: { 
+                                        ...response.userConsent,
+                                        consentUUID: response.uuid,
+                                        consentString: response.userConsent.euconsent
+                                    }
+                                }, renderConsents)
+                            })
+                            break;
                         case 12: // Show Options
                             renderingApp.location = action.payload.iframe_url
                             break;
-                        case 2: // cancel
+                        case 2: // Cancel
                             history.back()
+                            break;
                         default:
                             break;
                     }
@@ -315,7 +352,7 @@
             targetingParams: "{\"test\":\"test\"}",
             propertyHref: "https://"+propertyName
         }).then(result => setState({ 
-                userConsents: {
+                userConsent: {
                     consentUUID:  result.uuid,
                     consentString: result.euconsent,
                     addtlConsent: result.addtlConsent,
@@ -332,7 +369,7 @@
         )
         const renderIframe = () => {
             const iframe = document.querySelector('iframe')
-            iframe.src = "https://cdn.privacy-mgmt.com/index.html?preload_message=true"
+            iframe.src = "/sp/index.html?preload_message=true"
             window.removeEventListener("message", handleMessageEvent);
             window.addEventListener("message", handleMessageEvent)
         }
@@ -365,10 +402,10 @@
             propertyNameInput.value = propertyName
             propertyNameInput.oninput = () => setState({ propertyName: propertyNameInput.value }, debouncedRender)
         }
-        const renderConsents = ({ userConsents }) => {
+        const renderConsents = ({ userConsent }) => {
             const consentsTab = document.querySelector('#user-consents')
             const consentsElement = document.createElement('pre')
-            consentsElement.innerHTML = syntaxHighlight(JSON.stringify(userConsents || {}, undefined, 4))
+            consentsElement.innerHTML = syntaxHighlight(JSON.stringify(userConsent || {}, undefined, 4))
             consentsTab.lastChild.remove()
             consentsTab.appendChild(consentsElement)
         }
