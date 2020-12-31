@@ -254,7 +254,7 @@
                 .then(result => result.json())
                 .catch(error => console.error(error));
         }
-        const consent = ({ accountId, propertyId, propertyHref, actionType, uuid }) => {
+        const consent = ({ accountId, propertyId, propertyHref, actionType, uuid, privacyManagerId, pmSaveAndExitVariables }) => {
             const myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
             const requestOptions = {
@@ -267,10 +267,10 @@
                     actionType,
                     choiceId: null,
                     requestFromPM: true,
-                    privacyManagerId: "1234",
+                    privacyManagerId,
                     uuid,
                     requestUUID: "test",
-                    pmSaveAndExitVariables: {},
+                    pmSaveAndExitVariables,
                     meta: "{}",
                 }),
             };
@@ -308,10 +308,19 @@
                         type: payload.actions ? payload.actions.find(a => a.type === "choice").data.type : payload.actionType,
                         payload: payload.actions ? payload.actions.find(a => a.type === "choice").data : payload
                     }
+                    console.log(action);
                     switch (action.type) {
                         case 11: // Accept All
-                            console.log(document.location)
-                            consent({ ...state, uuid: state.userConsent.consentUUID, actionType: action.type }).then(response => {
+                        case 13: // Reject All
+                        case 1: // Save & Exit
+                        debugger
+                            consent({ 
+                                ...state,
+                                uuid: state.userConsent.consentUUID,
+                                actionType: action.type,
+                                pmSaveAndExitVariables: action.payload.payload,
+                                privacyManagerId: action.payload.payload ? action.payload.payload.privacyManagerId : ''
+                            }).then(response => {
                                 setState({
                                     userConsent: { 
                                         ...response.userConsent,
@@ -321,10 +330,11 @@
                                 }, renderConsents)
                             })
                             break;
+                        
                         case 12: // Show Options
-                            renderingApp.location = action.payload.iframe_url
+                            renderingApp.location = action.payload.iframe_url+`&consentUUID=${state.userConsent.consentUUID}`
                             break;
-                        case 2: // Cancel
+                        case 2: // PM Dismiss
                             history.back()
                             break;
                         default:
