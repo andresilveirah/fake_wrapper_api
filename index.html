@@ -79,9 +79,9 @@
         }
         .tablink {
             display: block;
-            text-decoration: underline;
             font: 18px Arial;
             padding: 12px;
+            color: #333;
         }
         .active {
             z-index: 1;
@@ -129,6 +129,7 @@
             }
         }
     </style>
+    <script src="./vendors.browser.js"></script>
 </head>
 <body>
     <div class="container">
@@ -156,6 +157,7 @@
                     <ul class="tablinks">
                         <li><a class="tablink active" data-tab-link="events" href="#events">Events</a></li>
                         <li><a class="tablink" data-tab-link="consents" href="#consents">Consents</a></li>
+                        <li><a class="tablink" data-tab-link="tcf" href="#tcf">TCF</a></li>
                     </ul>
                 </nav>
                 <div class="tab open" data-tab-name="events">
@@ -165,6 +167,10 @@
                 </div>
                 <div class="tab" data-tab-name="consents">
                     <code id="user-consents">
+                    </code>
+                </div>
+                <div class="tab" data-tab-name="tcf">
+                    <code id="tcf">
                     </code>
                 </div>
             </div>
@@ -323,7 +329,7 @@
                                     userConsent: { 
                                         ...response.userConsent,
                                         consentUUID: response.uuid,
-                                        consentString: response.userConsent.euconsent
+                                        euconsent: response.userConsent.euconsent
                                     }
                                 }, renderConsents)
                             })
@@ -362,7 +368,7 @@
         }).then(result => setState({ 
                 userConsent: {
                     consentUUID:  result.uuid,
-                    consentString: result.euconsent,
+                    euconsent: result.euconsent,
                     addtlConsent: result.addtlConsent,
                     grants: result.grants,
                     gdprApplies: result.gdprApplies,
@@ -410,13 +416,50 @@
             propertyNameInput.value = propertyName
             propertyNameInput.oninput = () => setState({ propertyName: propertyNameInput.value }, debouncedRender)
         }
+        const renderTCF = ({ userConsent }) => {
+            console.log(userConsent.euconsent);
+            if (userConsent.euconsent) {
+                const vectors = [
+                    "vendorConsents",
+                    "vendorLegitimateInterests",
+                    "vendorsAllowed",
+                    "vendorsDisclosed",
+                    "purposeConsents",
+                    "purposeLegitimateInterests",
+                    "specialFeatureOptIns",
+                    "publisherConsents",
+                    "publisherCustomConsents",
+                    "publisherLegitimateInterests",
+                    "publisherCustomLegitimateInterests",
+                    // "publisherRestrictions" // TODO: the interface of PublisherRestrictionsVector is a pain
+                ]
+                const decodedConsentString = tcf.TCString.decode(userConsent.euconsent)
+
+                vectors.forEach(vecName => 
+                    decodedConsentString[vecName] = decodedConsentString[vecName] ?
+                        getConsented(decodedConsentString[vecName]) :
+                        []
+                )
+                
+                const tcfTab = document.querySelector('#tcf')
+                const tcfDataElement = document.createElement('pre')
+                tcfDataElement.innerHTML = syntaxHighlight(JSON.stringify(decodedConsentString, undefined, 4))
+                tcfTab.lastChild.remove()
+                tcfTab.appendChild(tcfDataElement)
+            }   
+        }
         const renderConsents = ({ userConsent }) => {
             const consentsTab = document.querySelector('#user-consents')
             const consentsElement = document.createElement('pre')
             consentsElement.innerHTML = syntaxHighlight(JSON.stringify(userConsent || {}, undefined, 4))
             consentsTab.lastChild.remove()
             consentsTab.appendChild(consentsElement)
+
+            renderTCF({ userConsent })
         }
+        const getConsented = vector => Array.from(vector)
+            .filter(([_id, consented]) => consented)
+            .reduce((acc, [id, _consented]) => [...acc, id], [])
 
         function render () {
             renderInputs(state)
