@@ -1,14 +1,14 @@
 const fetch = require('./fetch')
 
-const realWrapperApiUrl = 'https://cdn.privacy-mgmt.com/wrapper/tcfv2/v1/gdpr'
+// const realWrapperApiUrl = 'https://cdn.privacy-mgmt.com/wrapper'
 
 const fetchRealWrapperApi = (url, options = { method: 'POST' }) => body =>
-  fetch(`${realWrapperApiUrl}${url}`, {
+  fetch(url, {
     ...options,
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(body)
+    body: options.method === 'POST' ? JSON.stringify(body) : null
   })
 
 const toQueryString = (params) => Object
@@ -19,14 +19,14 @@ const toQueryString = (params) => Object
 module.exports = {
   gdpr: {
     tcfv2: {
-      nativeMessage: fetchRealWrapperApi('/native-message'),
-      getMessage: fetchRealWrapperApi('/message-url?inApp=true'),
-      consent: fetchRealWrapperApi('/consent?inApp=true'),
+      nativeMessage: fetchRealWrapperApi('https://cdn.privacy-mgmt.com/wrapper/tcfv2/v1/gdpr/native-message'),
+      getMessage: fetchRealWrapperApi('https://cdn.privacy-mgmt.com/wrapper/tcfv2/v1/gdpr/message-url?inApp=true'),
+      consent: fetchRealWrapperApi('https://cdn.privacy-mgmt.com/wrapper/tcfv2/v1/gdpr/consent?inApp=true'),
     }
   },
   ccpa: {
-    getMessage: (body) => fetchRealWrapperApi(`/ccpa/message-url?${toQueryString(body)}`, undefined, { method: 'GET' })(body),
-    consent: (body) => fetchRealWrapperApi(`/ccpa/consent/${body.actionType}`, body)(body)
+    getMessage: (body) => fetchRealWrapperApi(`https://wrapper-api.sp-prod.net/ccpa/message-url?${toQueryString(body)}`, { method: 'GET' })(body),
+    consent: (body) => fetchRealWrapperApi(`https://wrapper-api.sp-prod.net/ccpa/consent/${body.actionType}`, body)(body)
   },
   toQueryString
 }

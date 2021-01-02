@@ -204,13 +204,13 @@
             propertyId: 40,
             propertyName: "www.sourcepoint.com",
             userConsent: {},
-            serverResponse: {},
+            message: {},
             renderingAppEvents: []
         }
         const setState = (newState, renderCallback = () => {}) => {
             state = { ...state, ...newState }
             renderCallback(state)
-            console.debug(state)
+            console.debug("setState: ", state)
         }
         const debounce = (func, delay) => {
             let inDebounce
@@ -256,7 +256,7 @@
                     meta: "{}"
                 }),
             };
-            return fetch("/tcfv2/v1/gdpr/native-message", requestOptions)
+            return fetch(`/all/v1/native-message?ip=95.91.217.125`, requestOptions)
                 .then(result => result.json())
                 .catch(error => console.error(error));
         }
@@ -334,7 +334,6 @@
                                 }, renderConsents)
                             })
                             break;
-                        
                         case 12: // Show Options
                             renderingApp.location = action.payload.iframe_url+`&consentUUID=${state.userConsent.consentUUID}`
                             break;
@@ -348,11 +347,11 @@
                 case 'sp.readyForPreload':
                     renderingApp.postMessage({
                         name: 'sp.loadMessage',
-                        message_json: state.serverResponse.msgJSON,
-                        message_choice: state.serverResponse.choiceOptions,
-                        categories: state.serverResponse.stackInfo.categories,
-                        site_id: state.serverResponse.siteId,
-                        language: state.serverResponse.stackInfo.language
+                        message_json: state.message.msgJSON,
+                        message_choice: state.message.choiceOptions,
+                        categories: state.message.stackInfo.categories,
+                        site_id: state.propertyId,
+                        language: state.message.stackInfo.language
                     }, '*')
                     break;
                 default:
@@ -363,18 +362,21 @@
         const renderMessage = ({ accountId, propertyId, propertyName }) => getMessage({
             accountId,
             propertyId,
-            targetingParams: "{\"test\":\"test\"}",
             propertyHref: "https://"+propertyName
         }).then(result => setState({ 
                 userConsent: {
-                    consentUUID:  result.uuid,
-                    euconsent: result.euconsent,
-                    addtlConsent: result.addtlConsent,
-                    grants: result.grants,
-                    gdprApplies: result.gdprApplies,
-                    customVendorsResponse: result.customVendorsResponse
+                    consentUUID:  result.gdpr.uuid,
+                    euconsent: result.gdpr.euconsent,
+                    addtlConsent: result.gdpr.addtlConsent,
+                    grants: result.gdpr.grants,
+                    gdprApplies: result.gdpr.gdprApplies,
+                    customVendorsResponse: result.gdpr.customVendorsResponse
                 },
-                serverResponse: result,
+                message: {
+                    msgJSON: result.message.msgJSON,
+                    choiceOptions: result.message.choiceOptions,
+                    stackInfo: result.message.stackInfo,
+                },
                 renderingAppEvents: []
             }, state => {
                 renderConsents(state)
