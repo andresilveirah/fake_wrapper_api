@@ -62,10 +62,10 @@ router.post('/native-message', async (req, res) => {
     ccpa.getMessage(ccpaReq)
   ]);
 
-  if (gdprResult.err || ccpaResult.err) {
-    res.status(500).json({ err: { gdpr: gdprResult.err, ccpa: ccpaResult.err }})
-    return
-  }
+  // if (gdprResult.err || ccpaResult.err) {
+  //   res.status(500).json({ err: { gdpr: gdprResult.err, ccpa: ccpaResult.err }})
+  //   return
+  // }
 
   const appliedLegislation = location === "GDPR" ? gdprResult : ccpaResult
 
