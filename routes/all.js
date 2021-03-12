@@ -606,7 +606,8 @@ router.post('/multi-campaign', async (_req, res) => {
           messageId: 123
         }
       }
-    ]
+    ],
+    localState: '{ \"data\": \"local state data\" }'
   })
 })
 
