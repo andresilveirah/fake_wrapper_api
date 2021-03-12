@@ -17,33 +17,6 @@ const ccpaConsent = async (body, location) => {
   return location === "CCPA" ? ccpa.consent(ccpaReq) : ccpa.getMessage(ccpaReq);
 }
 
-
-/*
-{
-    "requestUUID": String,
-    "authId": String?,
-    "accountId": Number,
-    "multiCampaign": Boolean, // when false, indicates a single property is used for multiple legislations
-    "legislations": {
-        "gdpr?": {
-          "propertyHref": String,
-          "propertyId": Number,
-          "targetingParams": Object,
-          "campaignEnv": "prod" | "stage",
-          "uuid": String?,
-          "meta": String?
-        },
-        "ccpa?": {
-          "propertyHref": String,
-          "propertyId": Number,
-          "targetingParams": Object,
-          "campaignEnv": "prod" | "stage",
-          "uuid": String?,
-          "meta": String?
-        }
-    }
-}
-*/
 router.post('/native-message', async (req, res) => {
   const ip = req.query.ip || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const location = await geolookup(ip)
@@ -61,11 +34,6 @@ router.post('/native-message', async (req, res) => {
     tcfv2.nativeMessage(gdprReq),
     ccpa.getMessage(ccpaReq)
   ]);
-
-  // if (gdprResult.err || ccpaResult.err) {
-  //   res.status(500).json({ err: { gdpr: gdprResult.err, ccpa: ccpaResult.err }})
-  //   return
-  // }
 
   const appliedLegislation = location === "GDPR" ? gdprResult : ccpaResult
 

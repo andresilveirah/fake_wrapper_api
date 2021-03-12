@@ -70,6 +70,13 @@
             padding: 8px;
             width: 100%;
         }
+        input .error {
+            border: 1px solid firebrick;
+        }
+        .error-input {
+            color: firebrick;
+            display: none;
+        }
         .tablinks-container {
             display: block;
         }
@@ -149,6 +156,7 @@
                     <div class="control">
                         <label for="propertyName">Property Name</label>
                         <input name="propertyName" type="text" placeholder="www.sourcepoint.com" />
+                        <span class="error-input" data-error-field="propertyName"></span>
                     </div>
                 </form>
             </div>
@@ -201,11 +209,12 @@
     <script>
         let state = {
             accountId: 22,
-            propertyId: 40,
-            propertyName: "www.sourcepoint.com",
+            propertyId: 7639,
+            propertyName: "tcfv2.mobile.webview",
             userConsent: {},
             message: {},
-            renderingAppEvents: []
+            renderingAppEvents: [],
+            errors: {}
         }
         const setState = (newState, renderCallback = () => {}) => {
             state = { ...state, ...newState }
@@ -416,7 +425,34 @@
 
             const propertyNameInput = document.querySelector('input[name="propertyName"]')
             propertyNameInput.value = propertyName
-            propertyNameInput.oninput = () => setState({ propertyName: propertyNameInput.value }, debouncedRender)
+            propertyNameInput.oninput = () => {
+                // validate
+                const hasOnlyValidChars = /[^\w\-\.\:\/]+/gi
+                const propertyName = propertyNameInput.value
+                if (propertyName.match(hasOnlyValidChars) !== null) {
+                    setState({ errors: {
+                        propertyName: [
+                            'Should contain only letters, -, ., :, /'
+                        ]
+                    }})
+                }
+                setState({ propertyName }, debouncedRender)
+            }
+        }
+        const renderInputErrors = ({ errors }) => {
+            const errorElement = document.querySelector('[data-error-field="propertyName"]')
+            const errorListElement = document.createElement('ul')
+            if (errors.propertyName) {
+                errors.propertyName.forEach(error => {
+                    const errorListItem = document.createElement('li')
+                    errorListItem.innerText = error
+                    errorListElement.appendChild(errorListItem)
+                })
+                errorElement.appendChild(errorListElement)
+                errorElement.style = "display: block"
+            } else {
+                errorElement.style = "display: none"
+            }
         }
         const renderTCF = ({ userConsent }) => {
             console.log(userConsent.euconsent);
@@ -465,6 +501,7 @@
 
         function render () {
             renderInputs(state)
+            renderInputErrors(state)
             renderConsents(state)
             renderEventsLog(state)
             renderMessage(state)
