@@ -573,6 +573,11 @@ const renderingAppMessage = {
     }
   ]
 }
+const messageMetaData = {
+  categoryId: 1, // 1: gdpr, 2: ccpa, 4: ios14
+  subCategoryId: 5, // 2: PM, 5: TCFv2, 6: NativeInApp, 7: PMOTT, 8: MessageNonTCF, 9: PMNonTCF, 10: ios, 11: CCPAOTT
+  messageId: 123
+}
 
 router.post('/multi-campaign', async (_req, res) => {
   res.status(200).json({
@@ -581,6 +586,7 @@ router.post('/multi-campaign', async (_req, res) => {
         type: 'ccpa',
         applies: true,
         message: renderingAppMessage,
+        messageMetaData,
         userConsent: {
           rejectedCategories: ['abc'],
           rejectedVendors: ['abc'],
@@ -593,6 +599,7 @@ router.post('/multi-campaign', async (_req, res) => {
         type: 'gdpr',
         applies: true,
         message: renderingAppMessage,
+        messageMetaData,
         userConsent: {
           euconsent: 'abc',
           grants: {},
@@ -602,6 +609,7 @@ router.post('/multi-campaign', async (_req, res) => {
       {
         type: 'ios14',
         message: renderingAppMessage,
+        messageMetaData,
         messageMetaData: {
           messageId: 123
         }
