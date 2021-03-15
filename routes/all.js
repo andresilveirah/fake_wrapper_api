@@ -603,16 +603,15 @@ router.post('/multi-campaign', async (_req, res) => {
         userConsent: {
           euconsent: 'abc',
           grants: {},
-          TCData: {}
+          TCData: {
+            foo: "bar"
+          }
         }
       }, 
       {
         type: 'ios14',
         message: renderingAppMessage,
-        messageMetaData,
-        messageMetaData: {
-          messageId: 123
-        }
+        messageMetaData
       }
     ],
     localState: '{ \"data\": \"local state data\" }'
