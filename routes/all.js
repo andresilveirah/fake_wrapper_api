@@ -1277,19 +1277,6 @@ router.post('/multi-campaign', async (_req, res) => {
   res.status(200).json({
     campaigns: [
       {
-        type: 'ccpa',
-        applies: true,
-        message: renderingAppMessageCCPA,
-        messageMetaData,
-        userConsent: {
-          rejectedCategories: ['abc'],
-          rejectedVendors: ['abc'],
-          rejectedAll: false,
-          status: 'rejectedSoome',
-          USPString: 'abc',
-        }
-      },
-      {
         type: 'gdpr',
         applies: true,
         message: renderingAppMessageGDPR,
@@ -1300,6 +1287,19 @@ router.post('/multi-campaign', async (_req, res) => {
           TCData: {
             foo: "bar"
           }
+        }
+      },
+      {
+        type: 'ccpa',
+        applies: true,
+        message: renderingAppMessageCCPA,
+        messageMetaData,
+        userConsent: {
+          rejectedCategories: ['abc'],
+          rejectedVendors: ['abc'],
+          rejectedAll: false,
+          status: 'rejectedSoome',
+          USPString: 'abc',
         }
       }, 
       {
