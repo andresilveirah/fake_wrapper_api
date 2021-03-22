@@ -834,10 +834,10 @@ const renderingAppMessageiOS14 = {
             "settings": {
               "languages": {
                 "EN": {
-                  "text": "<p>Fake iOS 14</p>"
+                  "text": "<p>ATT Pre-Prompt</p>"
                 }
               },
-              "text": "<p>Fake iOS 14</p>",
+              "text": "<p>ATT Pre-Prompt</p>",
               "font": {
                 "fontSize": 32,
                 "fontWeight": "700",
@@ -902,10 +902,10 @@ const renderingAppMessageiOS14 = {
               },
               "languages": {
                 "EN": {
-                  "text": "<p>We and our technology partners ask you to consent to the use of cookies to store and access personal data on your device. This can include the use of unique identifiers and information about your browsing patterns to create the best possible user experience on this website. The following description outlines how your data may be used by us, or by our partners.</p><p>&nbsp;</p><p>Some of our <a href=\"https://google.com\" target=\"_blank\" aria-label=\"message-link\">partners</a> process personal data on the basis of legitimate interest. You can object to such processing at any time. Please click “Options” below to view our list of partners and the purposes for which consent is required.</p><p>&nbsp;</p><p>You don’t have to consent in order to view the information on this site, but if you don’t consent, some personalization of content and advertising won’t be available. Your choices on this site will be applied only to this site. You can change your settings at any time by using the link at the bottom of the page to reopen the Privacy Preferences and managing the setting.</p>"
+                  "text": "<p>This is a fake iOS 14 Message</p><br /><p>In order to keep our services free, we monetise by serving you personalised ads. All you need to do is tap on \"Allow\" in the next prompt.</p>"
                 }
               },
-              "text": "<p>We and our technology partners ask you to consent to the use of cookies to store and access personal data on your device. This can include the use of unique identifiers and information about your browsing patterns to create the best possible user experience on this website. The following description outlines how your data may be used by us, or by our partners.</p><p>&nbsp;</p><p>Some of our <a href=\"https://google.com\" target=\"_blank\" aria-label=\"message-link\">partners</a> process personal data on the basis of legitimate interest. You can object to such processing at any time. Please click “Options” below to view our list of partners and the purposes for which consent is required.</p><p>&nbsp;</p><p>You don’t have to consent in order to view the information on this site, but if you don’t consent, some personalization of content and advertising won’t be available. Your choices on this site will be applied only to this site. You can change your settings at any time by using the link at the bottom of the page to reopen the Privacy Preferences and managing the setting.</p>",
+              "text": "<p>This is a fake iOS 14 Message</p><br /><p>In order to keep our services free, we monetise by serving you personalised ads. All you need to do is tap on \"Allow\" in the next prompt.</p>",
               "choice_options": [],
               "link": {
                 "fontWeight": "400",
@@ -921,25 +921,6 @@ const renderingAppMessageiOS14 = {
             "children": []
           }
         ]
-      },
-      {
-        "type": "Stacks",
-        "name": "Stacks",
-        "settings": {
-          "accordionsSpacing": {
-            "paddingLeft": 20,
-            "paddingRight": 50,
-            "paddingTop": 12,
-            "paddingBottom": 12
-          },
-          "panelSpacing": {
-            "paddingLeft": 20,
-            "paddingRight": 20,
-            "paddingTop": 0,
-            "paddingBottom": 12
-          }
-        },
-        "children": []
       },
       {
         "type": "Row",
@@ -970,47 +951,10 @@ const renderingAppMessageiOS14 = {
             "settings": {
               "languages": {
                 "EN": {
-                  "text": "Options"
+                  "text": "Got it."
                 }
               },
-              "text": "Options",
-              "border": {
-                "borderWidth": 1,
-                "borderColor": "$$primary_color$$",
-                "borderTopLeftRadius": 0,
-                "borderTopRightRadius": 0,
-                "borderBottomLeftRadius": 0,
-                "borderBottomRightRadius": 0,
-                "borderStyle": "solid"
-              },
-              "choice_option": {
-                "type": 12,
-                "data": {
-                  "button_text": "1609159698225",
-                  "privacy_manager_iframe_url": "https://notice.sp-prod.net/privacy-manager/index.html?message_id=404472",
-                  "consent_origin": "https://sourcepoint.mgr.consensu.org/tcfv2"
-                }
-              },
-              "font": {
-                "fontSize": 14,
-                "fontWeight": "700",
-                "color": "$$primary_color$$",
-                "fontFamily": "arial, helvetica, sans-serif"
-              },
-              "background": "#ffffff"
-            },
-            "children": []
-          },
-          {
-            "type": "Button",
-            "name": "Button",
-            "settings": {
-              "languages": {
-                "EN": {
-                  "text": "Accept"
-                }
-              },
-              "text": "Accept",
+              "text": "Got it.",
               "border": {
                 "borderWidth": 1,
                 "borderColor": "$$primary_color$$",
@@ -1101,7 +1045,7 @@ const renderingAppMessageiOS14 = {
     },
     {
       "choice_id": 3306996,
-      "type": 11,
+      "type": 99,
       "iframe_url": null,
       "button_text": "1596474188251"
     }
