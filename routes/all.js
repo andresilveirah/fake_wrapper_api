@@ -629,7 +629,7 @@ const renderingAppMessageGDPR = {
                   "consent_language": "EN"
                 }
               },
-              "background": "$$primary_color$$",
+              "background": "#0000b2",
               "font": {
                 "fontSize": 14,
                 "fontWeight": "700",
